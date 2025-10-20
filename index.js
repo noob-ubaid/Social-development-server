@@ -40,6 +40,7 @@ async function run() {
     const dataBase = client.db("Social-development");
     const usersCollection = dataBase.collection("social-event");
     const joinCollection = dataBase.collection("join");
+    const bookmark = dataBase.collection("bookmark");
     // jwt
     app.post("/jwt", async (req, res) => {
       const user = req.body;
@@ -118,6 +119,11 @@ async function run() {
     app.post("/join", async (req, res) => {
       const joinedData = req.body;
       const result = await joinCollection.insertOne(joinedData);
+      res.send(result);
+    });
+    app.post("/bookmark", async (req, res) => {
+      const data = req.body;
+      const result = await bookmark.insertOne(data);
       res.send(result);
     });
     // put method
