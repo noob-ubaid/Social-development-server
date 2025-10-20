@@ -89,6 +89,15 @@ async function run() {
       const result = await usersCollection.find(filter).toArray();
       res.send(result);
     });
+    app.get("/bookmark/:email", verifyToken, async (req, res) => {
+      const email = req.params.email;
+      if (email !== req.decoded.email) {
+        return res.status(403).send({ message: "forbidden access" });
+      }
+      const filter = { email };
+      const result = await bookmark.find(filter).toArray();
+      res.send(result);
+    });
     app.get("/join/:email", verifyToken, async (req, res) => {
       const email = req.params.email;
       if (email !== req.decoded.email) {
