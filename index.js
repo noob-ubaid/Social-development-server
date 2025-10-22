@@ -41,6 +41,7 @@ async function run() {
     const usersCollection = dataBase.collection("social-event");
     const joinCollection = dataBase.collection("join");
     const bookmark = dataBase.collection("bookmark");
+    const commentsCollection = dataBase.collection("comments");
     // jwt
     app.post("/jwt", async (req, res) => {
       const user = req.body;
@@ -98,6 +99,15 @@ async function run() {
       const result = await bookmark.find(filter).toArray();
       res.send(result);
     });
+     app.get("/comments/:postId", async (req, res) => {
+      const postId = req.params.postId;
+      const query = { postId: postId };
+      const comments = await commentsCollection
+        .find(query)
+        .sort({ createdAt: 1 })
+        .toArray();
+      res.send(comments);
+    });
     app.get("/join/:email", verifyToken, async (req, res) => {
       const email = req.params.email;
       if (email !== req.decoded.email) {
@@ -128,6 +138,12 @@ async function run() {
     app.post("/join", async (req, res) => {
       const joinedData = req.body;
       const result = await joinCollection.insertOne(joinedData);
+      res.send(result);
+    });
+     //? make comments
+    app.post("/comments", async (req, res) => {
+      const data = req.body;
+      const result = await commentsCollection.insertOne(data);
       res.send(result);
     });
     app.post("/bookmark", async (req, res) => {
